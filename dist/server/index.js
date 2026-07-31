@@ -90,19 +90,26 @@ function home() {
   </main>`;
 }
 
-function roomCards() {
-  return rooms.map(r => `<article class="room-card">
+function roomCards(list = rooms) {
+  return list.map(r => `<article class="room-card">
     <div class="room-cover" style="background-image:url('${r.photo}')"><span class="cover-status ${r.state === "已預訂" ? "full" : ""}">${r.state}</span><b>${r.type}</b></div>
     <div class="room-info"><div class="room-title"><h3>${r.name}</h3><small>${r.id}</small></div><div class="meta"><span>⌖ ${r.floor}</span><span>♙ ${r.cap} 人</span></div><div class="tags">${r.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
     <a class="btn ${r.state === "已預訂" ? "disabled" : "primary"}" href="${r.state === "已預訂" ? "/space" : `/space/book?id=${r.id}`}">${r.state === "已預訂" ? "今日已滿" : "選擇時段"}</a></div>
   </article>`).join("");
 }
 
-function spacePage(map = false) {
+function spacePage(map = false, url) {
+  const type = url.searchParams.get("type") || "all";
+  const building = url.searchParams.get("building") || "A";
+  const filteredRooms = type === "meeting" ? rooms.filter(r => r.type === "會議室") :
+    type === "event" ? rooms.filter(r => r.type.includes("活動") || r.type.includes("多功能")) :
+    type === "phone" ? [] : rooms;
+  const typeTabs = [["all","全部空間"],["meeting","會議室"],["event","活動空間"],["phone","電話亭"]];
   const lead = `<div class="lead"><h1>空間預約</h1><p>從空間清單或樓層地圖找到最適合的場地</p></div>
     <div class="search"><div class="field">⌕ 搜尋空間名稱、樓層</div><div class="view-toggle"><a class="${!map ? "on" : ""}" href="/space">清單</a><a class="${map ? "on" : ""}" href="/space/map">地圖</a></div></div>`;
-  if (!map) return `<main class="page">${lead}<div class="seg"><a href="/reservations">我的預約</a><a class="on" href="/space">預約查詢</a></div><div class="seg"><a class="on" href="/space">全部空間</a><a href="/space?type=meeting">會議室</a><a href="/space?type=event">活動空間</a><a href="/space?type=phone">電話亭</a></div>${roomCards()}</main>`;
-  return `<main class="page">${lead}<section class="map-card"><div class="floor-tabs"><a class="on" href="/space/map">A 棟</a><a href="/space/map">B 棟</a><a href="/space/map">C 棟</a></div><div class="floor"><span class="north">N ↑</span><a class="space s1" href="/space/book?id=A1201">大型會議室 A<br><small>可預約</small></a><div class="space facility s2">茶水間</div><a class="space available s3" href="/space/book?id=A1202">開放辦公區</a><div class="space lobby s4">電梯大廳</div></div><div class="legend"><span><i class="dot"></i>會議室</span><span><i class="dot green"></i>開放辦公</span><span><i class="dot yellow"></i>設施</span></div></section><div class="section-head"><h2>地圖上的可預約空間</h2></div>${rooms.slice(0,2).map(r => `<a class="record" style="display:block" href="/space/book?id=${r.id}"><div class="record-head"><div><h3>${r.name}</h3><p>${r.floor} · ${r.cap} 人</p></div><span class="status green">可預約</span></div></a>`).join("")}</main>`;
+  if (!map) return `<main class="page">${lead}<div class="seg"><a href="/reservations">我的預約</a><a class="on" href="/space">預約查詢</a></div><div class="seg">${typeTabs.map(t=>`<a class="${type===t[0]?"on":""}" href="${t[0]==="all"?"/space":`/space?type=${t[0]}`}">${t[1]}</a>`).join("")}</div>${filteredRooms.length?roomCards(filteredRooms):`<section class="empty-state"><span>${icon("phone")}</span><h3>目前沒有可用電話亭</h3><p>請切換其他空間類型或調整查詢條件。</p><a class="btn secondary" href="/space">查看全部空間</a></section>`}</main>`;
+  const mapRooms = building === "A" ? rooms.slice(0,2) : building === "B" ? [rooms[2]] : [rooms[3]];
+  return `<main class="page">${lead}<section class="map-card"><div class="floor-tabs">${["A","B","C"].map(b=>`<a class="${building===b?"on":""}" href="/space/map?building=${b}">${b} 棟</a>`).join("")}</div><div class="floor"><span class="north">N ↑</span><a class="space s1" href="/space/book?id=${mapRooms[0].id}">${mapRooms[0].name}<br><small>可預約</small></a><div class="space facility s2">${building==="A"?"茶水間":building==="B"?"交誼區":"景觀休息區"}</div><a class="space available s3" href="/space/book?id=${mapRooms[0].id}">${building==="A"?"開放辦公區":building==="B"?"共享工作區":"活動前廳"}</a><div class="space lobby s4">電梯大廳</div></div><div class="legend"><span><i class="dot"></i>會議室</span><span><i class="dot green"></i>開放辦公</span><span><i class="dot yellow"></i>設施</span></div></section><div class="section-head"><h2>${building} 棟可預約空間</h2></div>${mapRooms.map(r => `<a class="record" style="display:block" href="/space/book?id=${r.id}"><div class="record-head"><div><h3>${r.name}</h3><p>${r.floor} · ${r.cap} 人</p></div><span class="status green">可預約</span></div></a>`).join("")}</main>`;
 }
 
 function booking(url) {
@@ -117,15 +124,22 @@ function success(title, text, target, button) {
 
 function activities(url) {
   const registered = url.searchParams.get("registered") === "1";
-  return `<main class="page"><div class="lead"><h1>活動與社群</h1><p>探索大樓活動，與社群建立連結</p></div><div class="seg"><a class="on" href="/activities">全部活動</a><a href="/activities?tab=upcoming">即將舉行</a><a href="/activities?tab=mine">我已報名</a><a href="/activities?tab=past">過往活動</a></div>${registered ? `<div class="summary" style="margin-top:12px">✓ 已完成報名，活動已加入「我已報名」。</div>` : ""}${events.map((e,i) => `<article class="event-card"><div class="event-cover" style="background-image:url('${e.photo}')"><span class="cover-status">${e.type}</span><b>${e.title}</b></div><div class="event-info"><p class="meta">${e.meta}<br>${e.place}</p><div class="progress"><i style="width:${i === 2 ? 90 : i === 1 ? 50 : 70}%"></i></div><p class="kicker">${e.count} 人已報名</p><a class="btn ${e.state === "已報名" ? "secondary" : "primary"}" href="${e.state === "已報名" ? "/activities?tab=mine" : `/activities/detail?id=${e.id}`}">${e.state}</a></div></article>`).join("")}</main>`;
+  const tab = url.searchParams.get("tab") || "all";
+  const visible = tab === "mine" ? events.filter(e=>e.state==="已報名") : tab === "past" ? [] : tab === "upcoming" ? events.slice(1) : events;
+  const tabs=[["all","全部活動"],["upcoming","即將舉行"],["mine","我已報名"],["past","過往活動"]];
+  return `<main class="page"><div class="lead"><h1>活動與社群</h1><p>探索大樓活動，與社群建立連結</p></div><div class="seg">${tabs.map(t=>`<a class="${tab===t[0]?"on":""}" href="${t[0]==="all"?"/activities":`/activities?tab=${t[0]}`}">${t[1]}</a>`).join("")}</div>${registered ? `<div class="summary" style="margin-top:12px">✓ 已完成報名，活動已加入「我已報名」。</div>` : ""}${visible.length?visible.map((e,i) => `<article class="event-card"><div class="event-cover" style="background-image:url('${e.photo}')"><span class="cover-status">${e.type}</span><b>${e.title}</b></div><div class="event-info"><p class="meta">${e.meta}<br>${e.place}</p><div class="progress"><i style="width:${i === 2 ? 90 : i === 1 ? 50 : 70}%"></i></div><p class="kicker">${e.count} 人已報名</p><a class="btn ${e.state === "已報名" ? "secondary" : "primary"}" href="${e.state === "已報名" ? "/activities?tab=mine" : `/activities/detail?id=${e.id}`}">${e.state}</a></div></article>`).join(""):`<section class="empty-state"><span>${icon("calendar-xmark")}</span><h3>尚無過往活動</h3><p>已結束的活動將顯示在這裡。</p></section>`}</main>`;
 }
 
 function activityDetail() {
   return `<main class="page"><div class="event-cover" style="height:190px;border-radius:18px;background-image:url('${events[1].photo}')"><b>職場健康講座：姿勢與體態</b></div><div class="section-head"><h2>活動詳情</h2><span class="status green">尚有名額</span></div><section class="record"><p>08/12（三）12:00–13:00</p><p>A 棟 12F 多功能室</p><p>由專業物理治療師帶領，認識久坐工作常見姿勢問題，並練習可在辦公桌旁完成的伸展。</p><a class="btn primary" href="/activities?registered=1">立即報名</a></section></main>`;
 }
 
-function servicePage() {
-  return `<main class="page"><div class="lead"><h1>服務申請</h1><p>提交工作環境、行政與生活支援需求</p></div><div class="seg"><a class="on" href="/services">全部</a><a href="/services?cat=it">IT 支援</a><a href="/services?cat=repair">設施維修</a><a href="/services?cat=admin">行政庶務</a><a href="/services?cat=food">餐飲服務</a></div><section class="service-grid"><a class="service-card" href="/packages"><span class="hot">常用</span><span class="service-ico">${icon("box")}</span><h3>郵務包裹</h3><p>寄件、收件、常用收件人與寄件 QR Code</p><small>${icon("clock")} 即時</small></a><a class="service-card" href="/issues"><span class="hot">常用</span><span class="service-ico">${icon("triangle-exclamation")}</span><h3>問題反映</h3><p>設備故障、環境異常與現場照片回報</p><small>${icon("clock")} 依類型處理</small></a>${services.map((s,i) => `<a class="service-card" href="${i === 6 ? "/meal" : i === 5 ? "/visitors" : `/services/new?type=${encodeURIComponent(s.name)}`}">${s.hot ? `<span class="hot">熱門</span>` : ""}<span class="service-ico">${icon(s.icon)}</span><h3>${s.name}</h3><p>${s.desc}</p><small>${icon("clock")} ${s.eta}</small></a>`).join("")}</section></main>`;
+function servicePage(url) {
+  const cat = url.searchParams.get("cat") || "all";
+  const categoryItems = cat === "it" ? services.slice(0,1) : cat === "repair" ? services.slice(1,3) : cat === "admin" ? services.slice(3,6) : cat === "food" ? services.slice(6,7) : services;
+  const tabs=[["all","全部"],["it","IT 支援"],["repair","設施維修"],["admin","行政庶務"],["food","餐飲服務"]];
+  const leading = cat === "all" ? `<a class="service-card" href="/packages"><span class="hot">常用</span><span class="service-ico">${icon("box")}</span><h3>郵務包裹</h3><p>寄件、收件、常用收件人與寄件 QR Code</p><small>${icon("clock")} 即時</small></a><a class="service-card" href="/issues"><span class="hot">常用</span><span class="service-ico">${icon("triangle-exclamation")}</span><h3>問題反映</h3><p>設備故障、環境異常與現場照片回報</p><small>${icon("clock")} 依類型處理</small></a>` : "";
+  return `<main class="page"><div class="lead"><h1>服務申請</h1><p>提交工作環境、行政與生活支援需求</p></div><div class="seg">${tabs.map(t=>`<a class="${cat===t[0]?"on":""}" href="${t[0]==="all"?"/services":`/services?cat=${t[0]}`}">${t[1]}</a>`).join("")}</div><section class="service-grid">${leading}${categoryItems.map((s) => { const i=services.indexOf(s); return `<a class="service-card" href="${i === 6 ? "/meal" : i === 5 ? "/visitors" : `/services/new?type=${encodeURIComponent(s.name)}`}">${s.hot ? `<span class="hot">熱門</span>` : ""}<span class="service-ico">${icon(s.icon)}</span><h3>${s.name}</h3><p>${s.desc}</p><small>${icon("clock")} ${s.eta}</small></a>`; }).join("")}</section></main>`;
 }
 
 function serviceForm(url) {
@@ -133,8 +147,8 @@ function serviceForm(url) {
   return `<main class="page"><div class="lead"><h1>${type}</h1><p>請描述需求，我們會盡快協助處理</p></div><section class="form-card"><form action="/services/success"><label>問題位置<select class="field"><option>A 棟 12F</option><option>B 棟 8F</option><option>C 棟 15F</option></select></label><label>問題標題<input class="field" value="${type}"></label><label>詳細說明<textarea class="field" rows="5" placeholder="請描述目前狀況"></textarea></label><label>聯絡人<input class="field" value="王小明"></label><button class="btn primary" style="width:100%;border:0">送出申請</button></form></section></main>`;
 }
 
-function records(ticket = false, fresh = false) {
-  const data = ticket ? [
+function records(ticket = false, fresh = false, url) {
+  let data = ticket ? [
     ["#SR-2026-0158","會議室冷氣不冷","處理中","A 棟 12F · 建立於今日"],
     ["#SR-2026-0144","門禁卡權限調整","已完成","建立於 07/28"],
     ["#SR-2026-0129","辦公用品補充","已結案","建立於 07/20"],
@@ -144,8 +158,13 @@ function records(ticket = false, fresh = false) {
     ["#MR-2026-0728","小型會議室 B","已完成","07/28（二）14:00–15:00"],
   ];
   if (fresh === "cancelled" && !ticket) data[0][2] = "已取消";
+  const status = url.searchParams.get("status") || "all";
+  data = status === "active" ? data.filter(r=>["處理中","已預約"].includes(r[2])) :
+    status === "done" ? data.filter(r=>["已完成","已結案"].includes(r[2])) :
+    status === "cancelled" ? data.filter(r=>r[2]==="已取消") : data;
   const message = fresh === "cancelled" ? "✓ 預約已取消，列表狀態已更新。" : fresh === "edited" ? "✓ 預約內容已儲存。" : fresh ? "✓ 新資料已加入列表。" : "";
-  return `<main class="page"><div class="lead"><h1>${ticket ? "我的工單" : "我的預約"}</h1><p>${ticket ? "追蹤服務申請進度與回覆" : "管理所有空間與設施預約"}</p></div>${message ? `<div class="summary" style="margin-top:14px">${message}</div>` : ""}<div class="seg"><a class="on" href="${ticket?"/tickets":"/reservations"}">全部</a><a href="?status=active">進行中</a><a href="?status=done">已完成</a><a href="?status=cancelled">已取消</a></div>${data.map((r,i) => `<article class="record"><div class="record-head"><div><h3>${r[1]}</h3><p>${r[0]}</p></div><span class="status ${r[2]==="已取消"?"red":i === 1 ? "green" : i === 0 ? "blue" : ""}">${r[2]}</span></div><p>${r[3]}</p>${i === 0 && r[2]!=="已取消" ? `<div class="record-actions"><a class="btn secondary" href="${ticket?"/tickets/detail":"/reservations/edit"}">編輯</a><a class="btn danger" href="${ticket?"/tickets/detail":"/reservations/cancel"}">取消</a></div>` : `<a class="btn secondary" href="${ticket?"/tickets/detail":"/reservations/detail"}">查看詳情</a>`}</article>`).join("")}</main>`;
+  const base=ticket?"/tickets":"/reservations";
+  return `<main class="page"><div class="lead"><h1>${ticket ? "我的工單" : "我的預約"}</h1><p>${ticket ? "追蹤服務申請進度與回覆" : "管理所有空間與設施預約"}</p></div>${message ? `<div class="summary" style="margin-top:14px">${message}</div>` : ""}<div class="seg">${[["all","全部"],["active","進行中"],["done","已完成"],["cancelled","已取消"]].map(t=>`<a class="${status===t[0]?"on":""}" href="${t[0]==="all"?base:`${base}?status=${t[0]}`}">${t[1]}</a>`).join("")}</div>${data.length?data.map((r,i) => `<article class="record"><div class="record-head"><div><h3>${r[1]}</h3><p>${r[0]}</p></div><span class="status ${r[2]==="已取消"?"red":i === 1 ? "green" : i === 0 ? "blue" : ""}">${r[2]}</span></div><p>${r[3]}</p>${i === 0 && r[2]!=="已取消" ? `<div class="record-actions"><a class="btn secondary" href="${ticket?"/tickets/detail":"/reservations/edit"}">編輯</a><a class="btn danger" href="${ticket?"/tickets/detail":"/reservations/cancel"}">取消</a></div>` : `<a class="btn secondary" href="${ticket?"/tickets/detail":"/reservations/detail"}">查看詳情</a>`}</article>`).join(""):`<section class="empty-state"><span>${icon("inbox")}</span><h3>這個分類目前沒有資料</h3><p>切換其他狀態即可查看既有項目。</p></section>`}</main>`;
 }
 
 function meal() {
@@ -160,8 +179,10 @@ function visitors() {
   return `<main class="page"><div class="lead"><h1>訪客停車登記</h1><p>預先登記訪客與車牌，快速入場</p></div><section class="form-card"><form action="/services/success"><label>來訪日期<input class="field" type="date" value="2026-08-05"></label><label>訪客姓名<input class="field" value="陳大文"></label><label>手機號碼<input class="field" value="0912-345-678"></label><label>車牌號碼<input class="field" placeholder="ABC-1234"></label><button class="btn primary" style="width:100%;border:0">送出登記</button></form></section></main>`;
 }
 
-function facilities() {
-  return `<main class="page"><div class="lead"><h1>大樓設施</h1><p>瀏覽樓層平面圖與設施分布</p></div><section class="map-card"><div class="floor-tabs"><a class="on" href="/facilities?building=A">A 棟</a><a href="/facilities?building=B">B 棟</a><a href="/facilities?building=C">C 棟</a></div><div class="floor"><span class="north">N ↑</span><a class="space s1" href="/space/book?id=A1201">大型會議室 A</a><div class="space facility s2">茶水間</div><a class="space available s3" href="/space/book?id=A1202">開放辦公區</a><div class="space lobby s4">電梯大廳</div></div></section><div class="section-head"><h2>設施一覽</h2></div><section class="record">${[["store","便利超商","B1 · 24 小時營業"],["utensils","員工餐廳","1F · 11:30–19:00"],["dumbbell","健身房","B1 · 06:00–22:00"],["square-parking","停車場","B1–B3 · 共 600 個車位"]].map(x=>`<div class="facility-row"><span class="service-ico">${icon(x[0])}</span><div><b>${x[1]}</b><p>${x[2]}</p></div></div>`).join("")}</section></main>`;
+function facilities(url) {
+  const building=url.searchParams.get("building")||"A";
+  const labels={A:["大型會議室 A","茶水間","開放辦公區"],B:["創意工坊","咖啡廳","共享工作區"],C:["頂樓活動室","空中花園","交流前廳"]}[building];
+  return `<main class="page"><div class="lead"><h1>大樓設施</h1><p>瀏覽樓層平面圖與設施分布</p></div><section class="map-card"><div class="floor-tabs">${["A","B","C"].map(b=>`<a class="${building===b?"on":""}" href="/facilities?building=${b}">${b} 棟</a>`).join("")}</div><div class="floor"><span class="north">N ↑</span><a class="space s1" href="/space/map?building=${building}">${labels[0]}</a><div class="space facility s2">${labels[1]}</div><a class="space available s3" href="/space/map?building=${building}">${labels[2]}</a><div class="space lobby s4">電梯大廳</div></div></section><div class="section-head"><h2>${building} 棟設施一覽</h2></div><section class="record">${[["store","便利超商","B1 · 24 小時營業"],["utensils","員工餐廳","1F · 11:30–19:00"],["dumbbell","健身房","B1 · 06:00–22:00"],["square-parking","停車場","B1–B3 · 共 600 個車位"]].map(x=>`<div class="facility-row"><span class="service-ico">${icon(x[0])}</span><div><b>${x[1]}</b><p>${x[2]}</p></div></div>`).join("")}</section></main>`;
 }
 
 function notifications() {
@@ -286,11 +307,11 @@ export default {
     let title = "", body = "", back = "/";
     if (path === "/") body = home();
     else if (path === "/features") { title = "功能管理"; body = featureManager(url); }
-    else if (path === "/space") { title = "會議室預約"; body = spacePage(false); }
-    else if (path === "/space/map") { title = "空間地圖"; body = spacePage(true); back = "/space"; }
+    else if (path === "/space") { title = "會議室預約"; body = spacePage(false, url); }
+    else if (path === "/space/map") { title = "空間地圖"; body = spacePage(true, url); back = "/space"; }
     else if (path === "/space/book") { title = "確認預約"; body = booking(url); back = "/space"; }
     else if (path === "/space/success") { title = "預約完成"; body = success("預約成功", "空間已加入您的預約列表。", "/reservations?new=1", "查看我的預約"); back = "/space"; }
-    else if (path === "/reservations") { title = "我的預約"; body = records(false, url.searchParams.get("cancelled")==="1"?"cancelled":url.searchParams.get("edited")==="1"?"edited":url.searchParams.get("new")==="1"); }
+    else if (path === "/reservations") { title = "我的預約"; body = records(false, url.searchParams.get("cancelled")==="1"?"cancelled":url.searchParams.get("edited")==="1"?"edited":url.searchParams.get("new")==="1", url); }
     else if (path === "/reservations/edit") { title = "編輯預約"; body = reservationEdit(); back = "/reservations"; }
     else if (path === "/reservations/cancel") { title = "取消預約"; body = confirmPage("取消預約","/reservations?cancelled=1","/reservations","確定取消大型會議室 A 的預約嗎？"); back = "/reservations"; }
     else if (path === "/reservations/detail") { title = "預約詳情"; body = simpleDetail("預約詳情",[["預約編號","#MR-2026-0728"],["空間","小型會議室 B"],["時段","07/28（二）14:00–15:00"],["狀態","已完成"]],"/reservations"); back="/reservations"; }
@@ -304,10 +325,10 @@ export default {
     else if (path === "/facility/detail") { title = "公設預約詳情"; body = simpleDetail("多功能室 3F-1",[["狀態","已結束"],["使用人數","5 人"],["使用目的","外賓參訪"],["管理員意見","管委會協調完成"]],"/facility"); back="/facility"; }
     else if (path === "/activities") { title = "活動與社群"; body = activities(url); }
     else if (path === "/activities/detail") { title = "活動詳情"; body = activityDetail(); back = "/activities"; }
-    else if (path === "/services") { title = "服務申請"; body = servicePage(); }
+    else if (path === "/services") { title = "服務申請"; body = servicePage(url); }
     else if (path === "/services/new") { title = "提出申請"; body = serviceForm(url); back = "/services"; }
     else if (path === "/services/success") { title = "申請完成"; body = success("申請已送出", "案件編號 #SR-2026-0158，您可隨時查看進度。", "/tickets?new=1", "查看我的工單"); back = "/services"; }
-    else if (path === "/tickets") { title = "我的工單"; body = records(true, url.searchParams.get("new") === "1"); }
+    else if (path === "/tickets") { title = "我的工單"; body = records(true, url.searchParams.get("new") === "1", url); }
     else if (path === "/tickets/detail") { title = "工單詳情"; body = simpleDetail("會議室冷氣不冷",[["案件編號","#SR-2026-0158"],["處理狀態","工程人員處理中"],["建立時間","今日 09:20"],["最新回覆","已安排 15:00 到場檢查"]],"/tickets"); back="/tickets"; }
     else if (path === "/packages") { title = "郵務包裹"; body = packages(url); back="/services"; }
     else if (path === "/packages/new") { title = "新增寄件"; body = packageForm(); back="/packages"; }
@@ -330,7 +351,7 @@ export default {
     else if (path === "/issues/filter") { title = "問題篩選"; body = filterPage("問題"); back="/issues"; }
     else if (path === "/meal") { title = "餐券／餐務"; body = meal(); back = "/services"; }
     else if (path === "/meal/qr") { title = "餐券 QR Code"; body = qrPage(); back = "/meal"; }
-    else if (path === "/facilities") { title = "大樓設施"; body = facilities(); }
+    else if (path === "/facilities") { title = "大樓設施"; body = facilities(url); }
     else if (path === "/notifications") { title = "通知中心"; body = notifications(); }
     else if (path === "/guide") { title = "使用指南"; body = guide(false); back = "/more"; }
     else if (path === "/contact") { title = "聯絡我們"; body = guide(true); back = "/more"; }
