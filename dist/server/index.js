@@ -49,6 +49,10 @@ const accountCss = `
 .search .view-toggle{flex:0 0 auto;gap:4px;padding:5px;background:#fff8f0;border:2px solid #f79431;border-radius:14px;box-shadow:0 6px 16px #ad5e1017}
 .search .view-toggle a{min-width:64px;min-height:40px;padding:9px 11px;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:7px;color:#655e55;font-size:12px;font-weight:800}
 .search .view-toggle a i{font-size:15px}.search .view-toggle .on{background:#f79431;color:#fff;box-shadow:0 5px 12px #f7943135}
+.feature.visual{min-height:168px;padding:14px 11px;display:flex;flex-direction:column;justify-content:flex-end;background-image:linear-gradient(180deg,#16120e0a 12%,#16120ee8 100%),var(--cover);background-size:cover;background-position:center;border:0;box-shadow:0 10px 24px #16120e25;color:#fff}
+.feature.visual:before{content:"";position:absolute;inset:0;border:1px solid #ffffff2e;border-radius:18px;pointer-events:none}.feature.visual:after{display:none}
+.feature.visual>*{position:relative;z-index:1}.feature.visual .ico{width:39px;height:39px;margin:0 0 10px;background:#fff8f0e8;color:#ad5e10;backdrop-filter:blur(8px)}
+.feature.visual b{font-size:14px;text-shadow:0 1px 5px #16120e}.feature.visual small{color:#fff;opacity:.88}.feature.visual em{top:13px;color:#fff;background:#16120e66;width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
 .profile-avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:0 0 40px;background:linear-gradient(135deg,#f79431,#ad5e10);color:#fff;font-size:15px;font-weight:900;border:2px solid #fff;box-shadow:0 0 0 2px #fddab0;overflow:hidden}
 .profile-avatar:active{transform:scale(.96)}
 .account-hero{display:flex;align-items:center;gap:15px;background:linear-gradient(135deg,#fff8f0,#fef0dc);border:1px solid #fddab0;border-radius:20px;padding:18px;margin-top:14px}
@@ -88,9 +92,9 @@ function home() {
     <div class="home-glance"><a href="/reservations"><b>2</b><span>今日行程</span></a><a href="/tickets"><b>1</b><span>處理中工單</span></a><a href="/notifications"><b>3</b><span>最新通知</span></a></div>
     <div class="section-head"><div><span class="eyebrow">常用功能</span><h2>我的工作台</h2></div><a class="manage-link" href="/features">${icon("sliders")} 管理</a></div>
     <section class="primary-grid">
-      <a class="feature" href="/space"><span class="ico">${icon("calendar-check")}</span><b>會議室預約</b><small>找空間與可用時段</small><em>${icon("arrow-right")}</em></a>
-      <a class="feature" href="/facility"><span class="ico">${icon("dumbbell")}</span><b>公共設施</b><small>預約、點數與紀錄</small><em>${icon("arrow-right")}</em></a>
-      <a class="feature" href="/packages"><span class="ico">${icon("box")}</span><b>郵務包裹</b><small>寄件與收件管理</small><em>${icon("arrow-right")}</em></a>
+      <a class="feature visual" style="--cover:url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=600&q=82')" href="/space"><span class="ico">${icon("calendar-check")}</span><b>會議室預約</b><small>找空間與可用時段</small><em>${icon("arrow-right")}</em></a>
+      <a class="feature visual" style="--cover:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=82')" href="/facility"><span class="ico">${icon("dumbbell")}</span><b>公共設施</b><small>預約、點數與紀錄</small><em>${icon("arrow-right")}</em></a>
+      <a class="feature visual" style="--cover:url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=82')" href="/packages"><span class="ico">${icon("box")}</span><b>郵務包裹</b><small>寄件與收件管理</small><em>${icon("arrow-right")}</em></a>
     </section>
     <div class="section-head"><h2>快速入口</h2></div>
     <section class="quick-list">
