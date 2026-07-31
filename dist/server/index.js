@@ -57,7 +57,7 @@ function nav(path) {
 }
 
 function top(title, back = "/") {
-  if (!title) return `<header class="top"><div class="logo"><img class="brand-logo" src="/nanshan-logo.png" alt="南山人壽">NexSpace</div><div style="flex:1"></div><a class="bell" href="/notifications" aria-label="通知中心">${icon("bell")}</a></header>`;
+  if (!title) return `<header class="top"><div class="logo"><img class="brand-logo" src="/nanshan-logo-v2.png" alt="南山人壽" width="742" height="553">NexSpace</div><div style="flex:1"></div><a class="bell" href="/notifications" aria-label="通知中心">${icon("bell")}</a></header>`;
   return `<header class="top"><a class="back" href="${back}" aria-label="返回">${icon("chevron-left")}</a><div class="top-title">${title}</div><a class="bell" href="/notifications" aria-label="通知中心">${icon("bell")}</a></header>`;
 }
 
@@ -277,9 +277,12 @@ function simpleDetail(title, lines, back) {
 }
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, "") || "/";
+    if ((path === "/nanshan-logo-v2.png" || path === "/og.png") && env?.ASSETS) {
+      return env.ASSETS.fetch(request);
+    }
     let title = "", body = "", back = "/";
     if (path === "/") body = home();
     else if (path === "/features") { title = "功能管理"; body = featureManager(url); }
