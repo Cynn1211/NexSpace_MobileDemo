@@ -14,7 +14,7 @@ const events = [
 const services = [
   { icon: "wifi", name: "網路故障回報", desc: "網速異常、無法連接、IP 衝突等", eta: "預計 4 小時內", hot: true },
   { icon: "screwdriver-wrench", name: "設施維修申請", desc: "燈具、門鎖、家具、水電報修", eta: "預計 2 工作日", hot: true },
-  { icon: "sparkles", name: "特別清潔服務", desc: "活動後清潔、地毯清洗、玻璃擦拭", eta: "預約制" },
+  { icon: "broom", name: "特別清潔服務", desc: "活動後清潔、地毯清洗、玻璃擦拭", eta: "預約制" },
   { icon: "box-open", name: "辦公用品申請", desc: "文具、紙張、列印耗材補充", eta: "預計 1 工作日", hot: true },
   { icon: "square-parking", name: "月租停車位申請", desc: "一般車位、機車位申請與變更", eta: "預計 3 工作日" },
   { icon: "car-side", name: "訪客停車登記", desc: "預先登記訪客車牌，憑證入場", eta: "即時" },
@@ -46,6 +46,9 @@ const css = `
 
 const accountCss = `
 .top .logo{min-width:0}.top .brand-logo{width:176px;height:40px;object-fit:contain;object-position:left center}
+.search .view-toggle{flex:0 0 auto;gap:4px;padding:5px;background:#fff8f0;border:2px solid #f79431;border-radius:14px;box-shadow:0 6px 16px #ad5e1017}
+.search .view-toggle a{min-width:64px;min-height:40px;padding:9px 11px;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:7px;color:#655e55;font-size:12px;font-weight:800}
+.search .view-toggle a i{font-size:15px}.search .view-toggle .on{background:#f79431;color:#fff;box-shadow:0 5px 12px #f7943135}
 .profile-avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:0 0 40px;background:linear-gradient(135deg,#f79431,#ad5e10);color:#fff;font-size:15px;font-weight:900;border:2px solid #fff;box-shadow:0 0 0 2px #fddab0;overflow:hidden}
 .profile-avatar:active{transform:scale(.96)}
 .account-hero{display:flex;align-items:center;gap:15px;background:linear-gradient(135deg,#fff8f0,#fef0dc);border:1px solid #fddab0;border-radius:20px;padding:18px;margin-top:14px}
@@ -120,7 +123,7 @@ function spacePage(map = false, url) {
     type === "phone" ? [] : rooms;
   const typeTabs = [["all","全部空間"],["meeting","會議室"],["event","活動空間"],["phone","電話亭"]];
   const lead = `<div class="lead"><h1>空間預約</h1><p>從空間清單或樓層地圖找到最適合的場地</p></div>
-    <div class="search"><div class="field">⌕ 搜尋空間名稱、樓層</div><div class="view-toggle"><a class="${!map ? "on" : ""}" href="/space">清單</a><a class="${map ? "on" : ""}" href="/space/map">地圖</a></div></div>`;
+    <div class="search"><div class="field">⌕ 搜尋空間名稱、樓層</div><div class="view-toggle" aria-label="顯示方式"><a class="${!map ? "on" : ""}" href="/space" aria-current="${!map ? "page" : "false"}">${icon("list")} 清單</a><a class="${map ? "on" : ""}" href="/space/map" aria-current="${map ? "page" : "false"}">${icon("map-location-dot")} 地圖</a></div></div>`;
   if (!map) return `<main class="page">${lead}<div class="seg"><a href="/reservations">我的預約</a><a class="on" href="/space">預約查詢</a></div><div class="seg">${typeTabs.map(t=>`<a class="${type===t[0]?"on":""}" href="${t[0]==="all"?"/space":`/space?type=${t[0]}`}">${t[1]}</a>`).join("")}</div>${filteredRooms.length?roomCards(filteredRooms):`<section class="empty-state"><span>${icon("phone")}</span><h3>目前沒有可用電話亭</h3><p>請切換其他空間類型或調整查詢條件。</p><a class="btn secondary" href="/space">查看全部空間</a></section>`}</main>`;
   const mapRooms = building === "A" ? rooms.slice(0,2) : building === "B" ? [rooms[2]] : [rooms[3]];
   return `<main class="page">${lead}<section class="map-card"><div class="floor-tabs">${["A","B","C"].map(b=>`<a class="${building===b?"on":""}" href="/space/map?building=${b}">${b} 棟</a>`).join("")}</div><div class="floor"><span class="north">N ↑</span><a class="space s1" href="/space/book?id=${mapRooms[0].id}">${mapRooms[0].name}<br><small>可預約</small></a><div class="space facility s2">${building==="A"?"茶水間":building==="B"?"交誼區":"景觀休息區"}</div><a class="space available s3" href="/space/book?id=${mapRooms[0].id}">${building==="A"?"開放辦公區":building==="B"?"共享工作區":"活動前廳"}</a><div class="space lobby s4">電梯大廳</div></div><div class="legend"><span><i class="dot"></i>會議室</span><span><i class="dot green"></i>開放辦公</span><span><i class="dot yellow"></i>設施</span></div></section><div class="section-head"><h2>${building} 棟可預約空間</h2></div>${mapRooms.map(r => `<a class="record" style="display:block" href="/space/book?id=${r.id}"><div class="record-head"><div><h3>${r.name}</h3><p>${r.floor} · ${r.cap} 人</p></div><span class="status green">可預約</span></div></a>`).join("")}</main>`;
