@@ -28,14 +28,14 @@ function icon(name, extra = "") {
   return `<i class="fa-solid fa-${name}${extra ? ` ${extra}` : ""}" aria-hidden="true"></i>`;
 }
 
-function qrMarkup() {
+function qrMarkup(seed = 0) {
   const size = 29;
   const cell = (x, y) => {
     const finder = (ox, oy) => x >= ox && x < ox + 7 && y >= oy && y < oy + 7 &&
       (x === ox || x === ox + 6 || y === oy || y === oy + 6 || (x >= ox + 2 && x <= ox + 4 && y >= oy + 2 && y <= oy + 4));
     if (finder(0, 0) || finder(size - 7, 0) || finder(0, size - 7)) return true;
     if ((x < 8 && y < 8) || (x >= size - 8 && y < 8) || (x < 8 && y >= size - 8)) return false;
-    return ((x * 17 + y * 31 + x * y * 3 + (x ^ y)) % 7) < 3;
+    return ((x * 17 + y * 31 + x * y * 3 + (x ^ y) + seed * 11) % 7) < 3;
   };
   let out = "";
   for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) out += `<i class="${cell(x, y) ? "on" : ""}"></i>`;
@@ -61,11 +61,13 @@ const accountCss = `
 .account-photo{width:76px;height:76px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(135deg,#f79431,#ad5e10);color:#fff;font-size:26px;font-weight:900;box-shadow:0 10px 22px #ad5e1024}
 .account-hero h2{font-size:19px;margin:0 0 4px}.account-hero p{font-size:12px;color:#655e55;margin:0 0 9px}.account-role{display:inline-flex;align-items:center;gap:5px;background:#fff;color:#ad5e10;border-radius:99px;padding:5px 8px;font-size:10px;font-weight:800}
 .account-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.account-actions .btn{margin:0}
+.home-access{display:grid;grid-template-columns:138px 1fr;gap:10px;margin:14px 0 4px}.access-card,.visitor-glance{background:#fff;border:1px solid #eae7e2;border-radius:18px;padding:14px;box-shadow:0 8px 20px #16120e0d}.access-card{display:flex;flex-direction:column;align-items:center;text-align:center}.access-card h3,.visitor-glance h3{font-size:14px;margin:0}.access-card p{font-size:10px;color:#655e55;margin:7px 0 0}.mini-qr{display:grid;grid-template-columns:repeat(29,2px);grid-template-rows:repeat(29,2px);background:#fff;padding:7px;width:max-content;margin:10px auto 4px;border:1px solid #eae7e2;border-radius:8px}.mini-qr i{width:2px;height:2px;background:#fff}.mini-qr i.on{background:#16120e}.pass-state{display:inline-flex;align-items:center;gap:5px;color:#28753b;background:#e9f8ee;padding:5px 8px;border-radius:99px;font-size:9px;font-weight:900}.visitor-glance-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.visitor-glance-head a{font-size:10px;color:#d67820;font-weight:800}.visitor-mini{padding:9px 0;border-bottom:1px solid #eae7e2}.visitor-mini:last-child{border:0}.visitor-mini b{display:block;font-size:12px}.visitor-mini span{display:flex;justify-content:space-between;gap:6px;color:#655e55;font-size:10px;margin-top:3px}.visitor-mini em{font-style:normal;color:#28753b}.visitor-mini em.pending{color:#ad5e10}.pass-hero{background:linear-gradient(145deg,#16120e,#443d35 58%,#ad5e10);border-radius:24px;padding:20px;color:#fff;position:relative;overflow:hidden;box-shadow:0 14px 30px #16120e28}.pass-hero:after{content:"";position:absolute;width:170px;height:170px;border:28px solid #ffce0020;border-radius:50%;right:-78px;bottom:-90px}.pass-owner{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}.pass-owner small{display:block;color:#fddab0;margin-bottom:5px}.pass-owner h2{font-size:21px;margin:0}.pass-avatar{width:50px;height:50px;border-radius:16px;background:#f79431;display:grid;place-items:center;font-size:20px;font-weight:900}.pass-id{position:relative;z-index:1;margin-top:18px;padding-top:14px;border-top:1px solid #ffffff2b;display:flex;justify-content:space-between;gap:10px;font-size:11px}.pass-id b{display:block;font-size:13px;margin-top:4px}.pass-note{display:flex;align-items:flex-start;gap:10px;background:#fff8f0;border:1px solid #fddab0;border-radius:14px;padding:12px;margin-top:14px;color:#655e55;font-size:11px;line-height:1.55}.pass-note i{color:#d67820;font-size:16px;margin-top:2px}.qr-panel{background:#fff;border:1px solid #eae7e2;border-radius:20px;padding:16px;text-align:center;margin-top:14px}.qr-panel .qr{margin:14px auto}.validity{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.validity div{background:#f5f3f0;border-radius:12px;padding:10px;text-align:left}.validity small{display:block;color:#8a8177;font-size:9px;margin-bottom:4px}.validity b{font-size:11px}.countdown{display:inline-flex;align-items:center;gap:6px;background:#fff9c4;color:#7a5c00;border-radius:99px;padding:7px 10px;font-size:10px;font-weight:900}.expired-qr{filter:grayscale(1);opacity:.2}.flow-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:16px 0}.flow-step{text-align:center;position:relative}.flow-step:not(:last-child):after{content:"";position:absolute;top:17px;left:64%;right:-36%;height:2px;background:#fddab0}.flow-step span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;margin:auto;background:#fef0dc;color:#ad5e10;font-weight:900;position:relative;z-index:1}.flow-step.done span{background:#f79431;color:#fff}.flow-step b{display:block;font-size:9px;margin-top:6px;color:#655e55}.visitor-card-approved{border-color:#b9e2c5}.identity-link{display:flex;align-items:center;gap:10px;background:#f5f3f0;border-radius:12px;padding:11px;margin-top:12px;text-align:left}.identity-link i{width:34px;height:34px;border-radius:10px;background:#fff;color:#d67820;display:grid;place-items:center}.identity-link small{display:block;color:#8a8177;font-size:9px}.identity-link b{font-size:11px}.form-hint{font-size:10px;color:#8a8177;line-height:1.5;margin-top:-6px}.chip-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.chip{font-size:10px;padding:6px 9px;border-radius:99px;background:#fff8f0;color:#ad5e10;font-weight:800}
+@media(max-width:360px){.home-access{grid-template-columns:1fr}.access-card{flex-direction:row;text-align:left;gap:12px}.access-card .mini-qr{margin:0}.validity{grid-template-columns:1fr}}
 `;
 
 function nav(path) {
   const selected = path.startsWith("/space") || path.startsWith("/reservations") || path.startsWith("/facility") ? "booking" :
-    path.startsWith("/activities") ? "activities" : path.startsWith("/services") || path.startsWith("/tickets") || path.startsWith("/packages") || path.startsWith("/visitors") || path.startsWith("/issues") ? "services" : path === "/" ? "home" : "more";
+    path.startsWith("/activities") ? "activities" : path.startsWith("/services") || path.startsWith("/tickets") || path.startsWith("/packages") || path.startsWith("/visitors") || path.startsWith("/access") || path.startsWith("/issues") ? "services" : path === "/" ? "home" : "more";
   return `<nav class="bottom">
     <a class="${selected === "home" ? "on" : ""}" href="/"><span>${icon("house")}</span>首頁</a>
     <a class="${selected === "booking" ? "on" : ""}" href="/space"><span>${icon("calendar-check")}</span>預約</a>
@@ -92,6 +94,11 @@ function home() {
   return `<main class="page">
     <section class="hero"><div class="hero-copy"><span class="hero-pill">${icon("location-dot")} NexSpace A 棟</span><span class="kicker">2026年7月31日・星期五</span><h1>早安，王小明！</h1><p>今天有 2 項行程，第一場會議將於 09:30 開始。</p></div><div class="hero-orbit">${icon("building")}</div></section>
     <div class="home-glance"><a href="/reservations"><b>2</b><span>今日行程</span></a><a href="/tickets"><b>1</b><span>處理中工單</span></a><a href="/notifications"><b>3</b><span>最新通知</span></a></div>
+    <div class="section-head"><div><span class="eyebrow">ACCESS</span><h2>通行證與今日訪客</h2></div><a href="/visitors/new">＋ 訪客邀請</a></div>
+    <section class="home-access">
+      <a class="access-card" href="/access/employee"><div><h3>我的門禁</h3><div class="mini-qr">${qrMarkup(17)}</div></div><div><span class="pass-state">${icon("circle-check")} 已啟用</span><p>員工通行證<br>點擊顯示完整 QR Code</p></div></a>
+      <div class="visitor-glance"><div class="visitor-glance-head"><h3>今日訪客</h3><a href="/visitors">查看全部 ›</a></div><a class="visitor-mini" href="/visitors/pass"><b>10:30　陳毅先生</b><span>亞鴻廣告 <em>已核准</em></span></a><a class="visitor-mini" href="/visitors/detail"><b>14:00　李小姐</b><span>創新設計 <em class="pending">待審核</em></span></a></div>
+    </section>
     <div class="section-head"><div><span class="eyebrow">常用功能</span><h2>我的工作台</h2></div><a class="manage-link" href="/features">${icon("sliders")} 管理</a></div>
     <section class="primary-grid">
       <a class="feature visual" style="--cover:url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=600&q=82')" href="/space"><span class="ico">${icon("calendar-check")}</span><b>會議室預約</b><small>找空間與可用時段</small><em>${icon("arrow-right")}</em></a>
@@ -103,7 +110,7 @@ function home() {
       <a class="quick" href="/reservations"><span>${icon("clipboard-check")}</span><b>我的預約</b>${icon("chevron-right","arrow")}</a>
       <a class="quick" href="/tickets"><span>${icon("file-circle-check")}</span><b>我的工單</b>${icon("chevron-right","arrow")}</a>
       <a class="quick" href="/facilities"><span>${icon("map-location-dot")}</span><b>空間地圖</b>${icon("chevron-right","arrow")}</a>
-      <a class="quick" href="/notifications"><span>${icon("bell")}</span><b>通知中心</b>${icon("chevron-right","arrow")}</a>
+      <a class="quick" href="/access/employee"><span>${icon("id-card")}</span><b>我的通行證</b>${icon("chevron-right","arrow")}</a>
     </section>
     <div class="section-head"><h2>即將到來</h2><a href="/reservations">查看全部 ›</a></div>
     <section class="agenda">
@@ -214,7 +221,7 @@ function notifications() {
 
 function more() {
   const extras=[["file-contract","合約資訊"],["wallet","繳費記錄"],["print","資料列印系統"],["square-parking","停車管理系統"],["truck","貨車預約系統"]];
-  return `<main class="page"><div class="lead"><h1>更多功能</h1><p>完整工作台與大樓資訊</p></div><div class="section-head"><h2>個人功能</h2><a href="/features">功能管理</a></div><section class="quick-list"><a class="quick" href="/reservations"><span>${icon("clipboard-check")}</span><b>我的預約</b></a><a class="quick" href="/tickets"><span>${icon("file-circle-check")}</span><b>我的工單</b></a><a class="quick" href="/notifications"><span>${icon("bell")}</span><b>通知中心</b></a><a class="quick" href="/meal"><span>${icon("ticket")}</span><b>餐券管理</b></a></section><div class="section-head"><h2>空間地圖</h2></div><section class="quick-list"><a class="quick" href="/facilities"><span>${icon("building")}</span><b>大樓設施</b></a><a class="quick" href="/guide"><span>${icon("map")}</span><b>使用指南</b></a><a class="quick" href="/contact"><span>${icon("address-book")}</span><b>聯絡我們</b></a><a class="quick" href="/services"><span>${icon("headset")}</span><b>服務申請</b></a></section><div class="section-head"><h2>其他系統</h2></div>${extras.map(x=>`<a class="feature-row" href="/external?name=${encodeURIComponent(x[1])}"><span class="service-ico" style="margin:0">${icon(x[0])}</span><b>${x[1]}</b><span class="pin">${icon("chevron-right")}</span></a>`).join("")}</main>`;
+  return `<main class="page"><div class="lead"><h1>更多功能</h1><p>完整工作台與大樓資訊</p></div><div class="section-head"><h2>個人功能</h2><a href="/features">功能管理</a></div><section class="quick-list"><a class="quick" href="/access/employee"><span>${icon("id-card")}</span><b>我的通行證</b></a><a class="quick" href="/visitors"><span>${icon("user-group")}</span><b>訪客登記</b></a><a class="quick" href="/reservations"><span>${icon("clipboard-check")}</span><b>我的預約</b></a><a class="quick" href="/tickets"><span>${icon("file-circle-check")}</span><b>我的工單</b></a><a class="quick" href="/notifications"><span>${icon("bell")}</span><b>通知中心</b></a><a class="quick" href="/meal"><span>${icon("ticket")}</span><b>餐券管理</b></a></section><div class="section-head"><h2>空間地圖</h2></div><section class="quick-list"><a class="quick" href="/facilities"><span>${icon("building")}</span><b>大樓設施</b></a><a class="quick" href="/guide"><span>${icon("map")}</span><b>使用指南</b></a><a class="quick" href="/contact"><span>${icon("address-book")}</span><b>聯絡我們</b></a><a class="quick" href="/services"><span>${icon("headset")}</span><b>服務申請</b></a></section><div class="section-head"><h2>其他系統</h2></div>${extras.map(x=>`<a class="feature-row" href="/external?name=${encodeURIComponent(x[1])}"><span class="service-ico" style="margin:0">${icon(x[0])}</span><b>${x[1]}</b><span class="pin">${icon("chevron-right")}</span></a>`).join("")}</main>`;
 }
 
 function guide(contact = false) {
@@ -225,7 +232,7 @@ function guide(contact = false) {
 function featureManager(url) {
   const swapped = url.searchParams.get("swap") === "1";
   const pinned = swapped ? [["box","郵務包裹"],["calendar-check","會議室預約"],["dumbbell","公共設施預約"]] : [["calendar-check","會議室預約"],["dumbbell","公共設施預約"],["box","郵務包裹"]];
-  const rest = [["user-group","訪客登記","/visitors"],["triangle-exclamation","問題反映","/issues"],["people-group","活動與社群","/activities"],["headset","服務申請","/services"],["file-contract","合約資訊","/external?name=合約資訊"],["wallet","繳費記錄","/external?name=繳費記錄"],["square-parking","停車管理系統","/external?name=停車管理系統"]];
+  const rest = [["id-card","我的通行證","/access/employee"],["user-group","訪客登記","/visitors"],["triangle-exclamation","問題反映","/issues"],["people-group","活動與社群","/activities"],["headset","服務申請","/services"],["file-contract","合約資訊","/external?name=合約資訊"],["wallet","繳費記錄","/external?name=繳費記錄"],["square-parking","停車管理系統","/external?name=停車管理系統"]];
   return `<main class="page"><div class="lead"><h1>功能管理</h1><p>常用功能最多 3 個，可調整順序與釘選項目</p></div><div class="section-head"><h2>常用功能（3/8）</h2><a href="/features?swap=${swapped?0:1}">交換順序</a></div>${pinned.map((x,i)=>`<div class="feature-row"><span class="drag">${icon("grip-vertical")}</span><span class="service-ico" style="margin:0">${icon(x[0])}</span><b>${x[1]}</b><a class="pin" href="/features?swap=${i===0?1:0}">${icon("thumbtack")}</a></div>`).join("")}<div class="section-head"><h2>功能列表</h2></div>${rest.map(x=>`<a class="feature-row" href="${x[2]}"><span class="drag">${icon("grip-vertical")}</span><span class="service-ico" style="margin:0">${icon(x[0])}</span><b>${x[1]}</b><span class="pin">${icon("plus")}</span></a>`).join("")}<a class="btn primary" href="/?saved=1">儲存</a></main>`;
 }
 
@@ -284,13 +291,32 @@ function recipientForm(edit=false) {
 }
 
 function visitorsList(url) {
-  const fresh=url.searchParams.get("new")==="1";
-  const cards=[["亞鴻廣告 陳毅","待審核","08/05（三）10:00"],["公務採訪團","已核准","08/02（日）14:00"],["合作夥伴 李小姐","已完成","07/29（三）09:30"]];
-  return `<main class="page"><div class="lead"><h1>訪客登記</h1><p>新增、篩選與管理訪客申請</p></div><a class="btn primary" href="/visitors/new">＋ 新增訪客</a><div class="record-actions"><a class="btn secondary" href="/visitors/filter">篩選</a><a class="btn secondary" href="/visitors">清除篩選</a></div>${fresh?`<div class="summary" style="margin-top:12px">✓ 新增訪客資料成功。</div>`:""}${cards.map((v,i)=>`<article class="record"><div class="record-head"><div><h3>${v[0]}</h3><p>${v[2]} · 產品部</p></div><span class="status ${i===1?"green":i===0?"blue":""}">${v[1]}</span></div><p>申請人：王小明</p>${i===0?`<div class="record-actions"><a class="btn secondary" href="/visitors/edit">編輯</a><a class="btn danger" href="/visitors/cancel">取消</a></div>`:`<a class="btn secondary" href="/visitors/detail">查看詳情</a>`}</article>`).join("")}</main>`;
+  const cancelled=url.searchParams.get("cancelled")==="1";
+  const cards=[
+    {name:"陳毅先生",company:"亞鴻廣告",state:"已核准",time:"今日 10:30–12:00",tone:"green",action:`<a class="btn primary" href="/visitors/pass">顯示門禁 QR Code</a>`},
+    {name:"李小姐",company:"創新設計",state:cancelled?"已取消":"待審核",time:"今日 14:00–15:30",tone:cancelled?"red":"blue",action:cancelled?`<a class="btn secondary" href="/visitors/detail">查看詳情</a>`:`<div class="record-actions"><a class="btn secondary" href="/visitors/edit">編輯</a><a class="btn danger" href="/visitors/cancel">取消</a></div>`},
+    {name:"公務採訪團",company:"城市新聞中心",state:"已完成",time:"08/02（日）14:00–16:00",tone:"",action:`<a class="btn secondary" href="/visitors/pass?expired=1">查看已失效通行證</a>`}
+  ];
+  return `<main class="page"><div class="lead"><h1>訪客登記</h1><p>申請、追蹤核准狀態與管理限時通行證</p></div><div class="seg"><a class="on" href="/visitors">訪客申請</a><a href="/access/employee">我的通行證</a></div><a class="btn primary" href="/visitors/new">＋ 新增訪客申請</a><div class="record-actions"><a class="btn secondary" href="/visitors/filter">篩選</a><a class="btn secondary" href="/visitors">清除篩選</a></div>${cancelled?`<div class="summary" style="margin-top:12px">訪客申請已取消，原通行證同步失效。</div>`:""}${cards.map(v=>`<article class="record ${v.state==="已核准"?"visitor-card-approved":""}"><div class="record-head"><div><h3>${v.name}</h3><p>${v.company} · ${v.time}</p></div><span class="status ${v.tone}">${v.state}</span></div><p>受訪人：王小明 · NexSpace A 棟</p>${v.action}</article>`).join("")}</main>`;
 }
 
-function visitorForm(edit=false) {
-  return `<main class="page"><div class="lead"><h1>${edit?"編輯":"新增"}訪客</h1><p>至少保留一位訪客</p></div><section class="form-card"><form action="/visitors?new=1"><label>預計來訪日期時間<input class="field" value="2026-08-05 10:00"></label><label>受訪部門<select class="field"><option>產品部</option><option>行政部</option></select></label><div class="section-head"><h2>訪客 1</h2><a href="/visitors/new?people=2">＋ 訪客</a></div><label>姓名<input class="field" value="${edit?"陳毅":"王小華"}"></label><label>電話<input class="field" value="0912-345-678"></label><label>Email<input class="field" value="visitor@example.com"></label><label>申請人<input class="field" value="王小明"></label><button class="btn primary" style="width:100%;border:0">送出</button></form></section></main>`;
+function visitorForm(edit=false, url) {
+  const twoPeople=url.searchParams.get("people")==="2";
+  return `<main class="page"><div class="lead"><h1>${edit?"編輯":"新增"}訪客申請</h1><p>核准後將依來訪時段產生限時門禁 QR Code</p></div><div class="flow-steps"><div class="flow-step done"><span>1</span><b>填寫資料</b></div><div class="flow-step"><span>2</span><b>審核確認</b></div><div class="flow-step"><span>3</span><b>取得 QR Code</b></div></div><section class="form-card"><form action="/visitors/submitted"><label>預計來訪日期<input class="field" type="date" value="2026-08-04" required></label><div class="record-actions"><label style="flex:1">開始時間<input class="field" type="time" value="10:30" required></label><label style="flex:1">結束時間<input class="field" type="time" value="12:00" required></label></div><p class="form-hint">訪客通行證只在上述時段內有效，逾時將自動失效。</p><label>來訪地點<select class="field"><option>NexSpace A 棟 12F</option><option>NexSpace B 棟 8F</option><option>NexSpace C 棟 15F</option></select></label><label>受訪部門<select class="field"><option>產品部</option><option>行政部</option><option>行銷部</option></select></label><label>來訪事由<select class="field"><option>商務會議</option><option>面試</option><option>設備維護</option><option>活動參與</option></select></label><div class="section-head"><h2>訪客 1</h2><a href="/visitors/new?people=2">＋ 增加同行訪客</a></div><label>姓名<input class="field" value="${edit?"李小姐":"陳毅"}" required></label><label>公司／組織<input class="field" value="${edit?"創新設計":"亞鴻廣告"}" required></label><label>電話<input class="field" inputmode="tel" value="0912-345-678" required></label><label>Email<input class="field" type="email" value="visitor@example.com" required></label>${twoPeople?`<div class="section-head"><h2>訪客 2</h2><a href="/visitors/new">移除</a></div><label>姓名<input class="field" value="林志豪" required></label><label>公司／組織<input class="field" value="亞鴻廣告" required></label><label>電話<input class="field" inputmode="tel" value="0988-765-432" required></label><label>Email<input class="field" type="email" value="lin@example.com" required></label>`:""}<label>申請人<input class="field" value="王小明｜員工 ID NX-A-EMP-000128" readonly></label><button class="btn primary" style="width:100%;border:0">送出申請</button></form></section></main>`;
+}
+
+function visitorSubmitted() {
+  return `<main class="page success"><div class="success-mark">✓</div><h1>訪客申請已送出</h1><p>申請編號 #VIS-2026-0804-018<br>核准後將自動產生限時門禁 QR Code。</p><div class="flow-steps"><div class="flow-step done"><span>1</span><b>已送出</b></div><div class="flow-step done"><span>2</span><b>待審核</b></div><div class="flow-step"><span>3</span><b>取得 QR Code</b></div></div><section class="summary" style="text-align:left"><b>示範流程</b><br>Prototype 可直接模擬核准；正式版將由管理端審核，並通知申請人及訪客。</section><a class="btn primary" href="/visitors/pass?new=1">模擬核准並產生 QR Code</a><a class="btn secondary" href="/visitors">查看訪客申請</a></main>`;
+}
+
+function visitorPass(url) {
+  const expired=url.searchParams.get("expired")==="1";
+  const fresh=url.searchParams.get("new")==="1";
+  return `<main class="page"><div class="lead"><span class="eyebrow">VISITOR ACCESS</span><h1>訪客門禁通行證</h1><p>${expired?"此通行證已超過核准時段":"請於核准時段內出示 QR Code 感應入場"}</p></div>${fresh?`<div class="summary" style="margin-top:14px">${icon("circle-check")} 訪客申請已核准，門禁 QR Code 已產生。</div>`:""}<div class="flow-steps"><div class="flow-step done"><span>1</span><b>已送出</b></div><div class="flow-step done"><span>2</span><b>已核准</b></div><div class="flow-step ${expired?"":"done"}"><span>3</span><b>${expired?"已失效":"可通行"}</b></div></div><section class="qr-panel"><span class="status ${expired?"red":"green"}">${expired?"已失效":"有效通行證"}</span><h2>陳毅先生</h2><p class="kicker">亞鴻廣告 · 商務會議</p><div class="qr ${expired?"expired-qr":""}">${qrMarkup(43)}</div>${expired?`<p class="code">PASS EXPIRED</p>`:`<span class="countdown">${icon("clock")} 剩餘有效時間 01:42:18</span><p class="code">VIS-A-0804-018</p>`}<div class="validity"><div><small>有效開始</small><b>2026/08/04 10:15</b></div><div><small>有效結束</small><b>2026/08/04 12:15</b></div></div><div class="chip-row"><span class="chip">A 棟大廳</span><span class="chip">12F 產品部</span><span class="chip">僅限本人</span></div></section><div class="pass-note">${icon("shield-halved")}<span>訪客 QR Code 會在核准時段結束後自動失效；取消申請或被撤銷時也會立即停用。</span></div>${expired?`<a class="btn primary" href="/visitors/new">重新提出訪客申請</a>`:`<a class="btn secondary" href="/visitors/pass?expired=1">查看失效狀態示意</a>`}<a class="btn secondary" href="/visitors">返回訪客列表</a></main>`;
+}
+
+function employeePass() {
+  return `<main class="page"><div class="lead"><span class="eyebrow">MY ACCESS</span><h1>我的通行證</h1><p>與員工 ID 連動的常駐門禁憑證</p></div><div class="seg"><a class="on" href="/access/employee">員工通行證</a><a href="/visitors">訪客通行證</a></div><section class="pass-hero"><div class="pass-owner"><div><small>NexSpace Tenant Employee</small><h2>王小明</h2></div><div class="pass-avatar">王</div></div><div class="pass-id"><div><small>員工 ID</small><b>NX-A-EMP-000128</b></div><div><small>門禁狀態</small><b>已啟用</b></div></div></section><section class="qr-panel"><span class="pass-state">${icon("circle-check")} 有效通行證</span><div class="qr">${qrMarkup(17)}</div><p class="code">NX-A-EMP-000128</p><p class="kicker">NexSpace A 棟 · 產品部</p><div class="identity-link">${icon("id-card")}<div><small>身分連動</small><b>此 QR Code 綁定員工 ID NX-A-EMP-000128</b></div></div></section><div class="pass-note">${icon("shield-halved")}<span>員工 QR Code 不設定到期日並持續保存在「我的通行證」中；若員工 ID 停用、離職或權限變更，門禁權限會同步更新。</span></div><a class="btn secondary" href="/account">查看員工資料</a><a class="btn secondary" href="/">返回首頁</a></main>`;
 }
 
 function filterPage(kind) {
@@ -339,7 +365,7 @@ function accountPage(url) {
         <button class="btn primary" type="submit" style="width:100%;border:0">儲存變更</button>
       </form>
     </section>
-    <div class="account-actions"><a class="btn secondary" href="/notifications">${icon("bell")} 通知設定</a><a class="btn secondary" href="/guide">${icon("circle-question")} 使用指南</a></div>
+    <div class="account-actions"><a class="btn secondary" href="/access/employee">${icon("id-card")} 我的通行證</a><a class="btn secondary" href="/notifications">${icon("bell")} 通知設定</a></div>
   </main>`;
 }
 
@@ -382,12 +408,15 @@ export function renderV11(pathname: string, search = "") {
     else if (path === "/packages/qr") { title = "寄件 QR Code"; body = packageQr(); back="/packages"; }
     else if (path === "/packages/detail") { title = "寄件詳情"; body = simpleDetail("寄件詳情",[["物流公司","黑貓宅急便"],["收件公司","致遠科技"],["收件人","汪建國"],["狀態","已寄件"]],"/packages"); back="/packages"; }
     else if (path === "/packages/history") { title = "郵務使用記錄"; body = simpleDetail("郵務使用記錄",[["現有零用金","NT$ 355"],["儲值","NT$ 500 · 07/01"],["支出","NT$ 32 · 07/28"],["支出","NT$ 32 · 07/20"]],"/packages"); back="/packages"; }
+    else if (path === "/access" || path === "/access/employee") { title = "我的通行證"; body = employeePass(); back = "/"; }
     else if (path === "/visitors") { title = "訪客登記"; body = visitorsList(url); back = "/services"; }
-    else if (path === "/visitors/new") { title = "新增訪客"; body = visitorForm(false); back="/visitors"; }
-    else if (path === "/visitors/edit") { title = "編輯訪客"; body = visitorForm(true); back="/visitors"; }
+    else if (path === "/visitors/new") { title = "新增訪客"; body = visitorForm(false,url); back="/visitors"; }
+    else if (path === "/visitors/edit") { title = "編輯訪客"; body = visitorForm(true,url); back="/visitors"; }
+    else if (path === "/visitors/submitted") { title = "申請已送出"; body = visitorSubmitted(); back="/visitors"; }
+    else if (path === "/visitors/pass") { title = "訪客通行證"; body = visitorPass(url); back="/visitors"; }
     else if (path === "/visitors/filter") { title = "訪客篩選"; body = filterPage("訪客"); back="/visitors"; }
     else if (path === "/visitors/cancel") { title = "取消訪客"; body = confirmPage("取消訪客申請","/visitors?cancelled=1","/visitors","確定取消亞鴻廣告陳毅的來訪申請嗎？"); back="/visitors"; }
-    else if (path === "/visitors/detail") { title = "訪客詳情"; body = simpleDetail("合作夥伴 李小姐",[["狀態","已完成"],["來訪時間","07/29（三）09:30"],["受訪部門","產品部"],["申請人","王小明"]],"/visitors"); back="/visitors"; }
+    else if (path === "/visitors/detail") { title = "訪客詳情"; body = simpleDetail("李小姐｜創新設計",[["狀態","待審核"],["來訪時間","今日 14:00–15:30"],["受訪地點","NexSpace A 棟 12F"],["受訪部門","產品部"],["申請人","王小明｜NX-A-EMP-000128"]],"/visitors"); back="/visitors"; }
     else if (path === "/issues") { title = "問題反映"; body = issues(url); back="/services"; }
     else if (path === "/issues/new") { title = "新增問題"; body = issueForm(); back="/issues"; }
     else if (path === "/issues/filter") { title = "問題篩選"; body = filterPage("問題"); back="/issues"; }
