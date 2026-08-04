@@ -22,6 +22,12 @@ const checks = [
   ["/visitors/pass", "剩餘有效時間"],
   ["/visitors/pass?expired=1", "PASS EXPIRED"],
   ["/access/employee", "NX-A-EMP-000128"],
+  ["/booking", "booking-hub"],
+  ["/space", "A1201"],
+  ["/space/book?id=A1201&slot=1400", "14:00–15:30"],
+  ["/facility", "165"],
+  ["/parking?tab=query", "B2-082"],
+  ["/parking/book?id=B2-082", "B2-082"],
 ];
 
 async function verify() {
@@ -42,7 +48,7 @@ async function verify() {
     }
   }
   console.log(
-    `Verified ${checks.length} access and visitor flow states with source parity.`,
+    `Verified ${checks.length} access, visitor, and booking flow states with source parity.`,
   );
 }
 
