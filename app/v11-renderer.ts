@@ -109,7 +109,7 @@ function home() {
     <div class="section-head"><h2>快速入口</h2></div>
     <section class="quick-list">
       <a class="quick" href="/reservations"><span>${icon("clipboard-check")}</span><b>我的預約</b>${icon("chevron-right","arrow")}</a>
-      <a class="quick" href="/tickets"><span>${icon("file-circle-check")}</span><b>我的工單</b>${icon("chevron-right","arrow")}</a>
+      <a class="quick" href="/services"><span>${icon("headset")}</span><b>服務申請</b>${icon("chevron-right","arrow")}</a>
       <a class="quick" href="/facilities"><span>${icon("map-location-dot")}</span><b>空間地圖</b>${icon("chevron-right","arrow")}</a>
       <a class="quick" href="/access/employee"><span>${icon("id-card")}</span><b>我的通行證</b>${icon("chevron-right","arrow")}</a>
     </section>
