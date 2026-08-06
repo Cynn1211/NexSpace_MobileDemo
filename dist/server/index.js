@@ -397,7 +397,9 @@ export default {
     const path = url.pathname.replace(/\/+$/, "") || "/";
     const staticAssets = new Set(["/nanshan-logo-v2.png","/og.png","/nanshan-logo.svg","/nanshan-hero.png","/Alert.svg","/calendar.svg","/room.svg","/event.svg","/ICON2_calendar.svg","/ICON2_event.svg","/ICON2_id.svg","/ICON2_map.svg","/Nav_home.svg","/Nav_booking.svg","/Nav_event.svg","/Nav_service.svg","/Nav_more.svg"]);
     if (staticAssets.has(path) && env?.ASSETS) {
-      return env.ASSETS.fetch(request);
+      const assetUrl = new URL(request.url);
+      assetUrl.pathname = `/static${path}`;
+      return env.ASSETS.fetch(new Request(assetUrl.toString(), request));
     }
     let title = "", body = "", back = "/";
     if (/^\/(parking|tickets|issues|packages)(\/|$)/.test(path)) { title = "服務已調整"; body = `<main class="page success"><div class="success-mark">${icon("circle-check")}</div><h1>此服務已下架</h1><p>目前服務申請僅提供團體午餐訂購與門禁卡辦理。</p><a class="btn primary" href="/services">前往服務申請</a></main>`; }
