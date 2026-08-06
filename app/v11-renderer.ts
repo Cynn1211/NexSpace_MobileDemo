@@ -67,8 +67,8 @@ const accountCss = `
 `;
 
 function nav(path) {
-  const selected = path.startsWith("/booking") || path.startsWith("/space") || path.startsWith("/reservations") || path.startsWith("/facility") || path.startsWith("/parking") ? "booking" :
-    path.startsWith("/activities") ? "activities" : path.startsWith("/services") || path.startsWith("/tickets") || path.startsWith("/packages") || path.startsWith("/visitors") || path.startsWith("/access") || path.startsWith("/issues") ? "services" : path === "/" ? "home" : "more";
+  const selected = path.startsWith("/booking") || path.startsWith("/space") || path.startsWith("/reservations") || path.startsWith("/facility") ? "booking" :
+    path.startsWith("/activities") ? "activities" : path.startsWith("/services") || path.startsWith("/visitors") || path.startsWith("/access") ? "services" : path === "/" ? "home" : "more";
   return `<nav class="bottom">
     <a class="${selected === "home" ? "on" : ""}" href="/"><span>${icon("house")}</span>首頁</a>
     <a class="${selected === "booking" ? "on" : ""}" href="/booking"><span>${icon("calendar-check")}</span>預約</a>
@@ -94,7 +94,7 @@ function layout(path, title, body, back) {
 function home() {
   return `<main class="page">
     <section class="hero"><div class="hero-copy"><span class="hero-pill">${icon("location-dot")} NexSpace A 棟</span><span class="kicker">2026年7月31日・星期五</span><h1>早安，王小明！</h1><p>今天有 2 項行程，第一場會議將於 09:30 開始。</p></div><div class="hero-orbit">${icon("building")}</div></section>
-    <div class="home-glance"><a href="/reservations"><b>2</b><span>今日行程</span></a><a href="/tickets"><b>1</b><span>處理中工單</span></a><a href="/notifications"><b>3</b><span>最新通知</span></a></div>
+    <div class="home-glance"><a href="/reservations"><b>2</b><span>今日行程</span></a><a href="/services"><b>2</b><span>可申請服務</span></a><a href="/notifications"><b>3</b><span>最新通知</span></a></div>
     <div class="section-head"><div><span class="eyebrow">ACCESS</span><h2>通行證與今日訪客</h2></div><a href="/visitors/new">＋ 訪客邀請</a></div>
     <section class="home-access">
       <a class="access-card" href="/access/employee"><div><h3>我的門禁</h3><div class="mini-qr">${qrMarkup(17)}</div></div><div><span class="pass-state">${icon("circle-check")} 已啟用</span><p>員工通行證<br>點擊顯示完整 QR Code</p></div></a>
@@ -122,7 +122,7 @@ function home() {
 }
 
 function bookingHub() {
-  return `<main class="page"><div class="lead"><span class="eyebrow">BOOKING CENTER</span><h1>選擇預約服務</h1><p>先選擇預約類型，再查詢空間、設施或車位時段</p></div><section class="booking-hub"><a class="booking-card primary-booking" style="--cover:url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=82')" href="/space"><span class="booking-tag">空間地圖與時段</span><span class="booking-icon">${icon("door-open")}</span><h2>空間預約</h2><p>會議室、電話亭、共享工作區與活動場地</p></a><a class="booking-card" style="--cover:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=82')" href="/facility"><span class="booking-tag">點數制</span><span class="booking-icon">${icon("dumbbell")}</span><h2>公共設施預約</h2><p>健身房、放映廳與多功能活動室</p></a><a class="booking-card" style="--cover:url('https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=900&q=82')" href="/parking"><span class="booking-tag">汽車與機車</span><span class="booking-icon">${icon("square-parking")}</span><h2>車位預約</h2><p>查詢臨停車位、選擇時段並登記車牌</p></a></section><div class="section-head"><h2>近期預約</h2><a href="/reservations">查看全部 ›</a></div><section class="booking-status"><a class="booking-status-row" href="/reservations"><i>${icon("calendar-check")}</i><div><b>大型會議室 A</b><small>08/05 10:00–11:00 · A 棟 12F</small></div><span class="status green">已預約</span></a><a class="booking-status-row" href="/facility"><i>${icon("film")}</i><div><b>放映廳 3F-3</b><small>08/06 16:00–17:00 · 5 點</small></div><span class="status blue">已預約</span></a></section></main>`;
+  return `<main class="page"><div class="lead"><span class="eyebrow">BOOKING CENTER</span><h1>選擇預約服務</h1><p>選擇空間或公共設施，查詢可用時段並完成預約</p></div><section class="booking-hub"><a class="booking-card primary-booking" style="--cover:url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=82')" href="/space"><span class="booking-tag">空間地圖與時段</span><span class="booking-icon">${icon("door-open")}</span><h2>空間預約</h2><p>會議室、電話亭、共享工作區與活動場地</p></a><a class="booking-card" style="--cover:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=82')" href="/facility"><span class="booking-tag">點數制</span><span class="booking-icon">${icon("dumbbell")}</span><h2>公共設施預約</h2><p>健身房、放映廳與多功能活動室</p></a></section><div class="section-head"><h2>近期預約</h2><a href="/reservations">查看全部 ›</a></div><section class="booking-status"><a class="booking-status-row" href="/reservations"><i>${icon("calendar-check")}</i><div><b>大型會議室 A</b><small>08/05 10:00–11:00 · A 棟 12F</small></div><span class="status green">已預約</span></a><a class="booking-status-row" href="/facility"><i>${icon("film")}</i><div><b>放映廳 3F-3</b><small>08/06 16:00–17:00 · 5 點</small></div><span class="status blue">已預約</span></a></section></main>`;
 }
 
 function parkingPage(url) {
@@ -186,16 +186,15 @@ function activityDetail() {
 }
 
 function servicePage(url) {
-  const cat = url.searchParams.get("cat") || "all";
-  const categoryItems = cat === "it" ? services.slice(0,1) : cat === "repair" ? services.slice(1,3) : cat === "admin" ? services.slice(3,6) : cat === "food" ? services.slice(6,7) : services;
-  const tabs=[["all","全部"],["it","IT 支援"],["repair","設施維修"],["admin","行政庶務"],["food","餐飲服務"]];
-  const leading = cat === "all" ? `<a class="service-card" href="/packages"><span class="hot">常用</span><span class="service-ico">${icon("box")}</span><h3>郵務包裹</h3><p>寄件、收件、常用收件人與寄件 QR Code</p><small>${icon("clock")} 即時</small></a><a class="service-card" href="/issues"><span class="hot">常用</span><span class="service-ico">${icon("triangle-exclamation")}</span><h3>問題反映</h3><p>設備故障、環境異常與現場照片回報</p><small>${icon("clock")} 依類型處理</small></a>` : "";
-  return `<main class="page"><div class="lead"><h1>服務申請</h1><p>提交工作環境、行政與生活支援需求</p></div><div class="seg">${tabs.map(t=>`<a class="${cat===t[0]?"on":""}" href="${t[0]==="all"?"/services":`/services?cat=${t[0]}`}">${t[1]}</a>`).join("")}</div><section class="service-grid">${leading}${categoryItems.map((s) => { const i=services.indexOf(s); return `<a class="service-card" href="${i === 6 ? "/meal" : i === 5 ? "/visitors" : `/services/new?type=${encodeURIComponent(s.name)}`}">${s.hot ? `<span class="hot">熱門</span>` : ""}<span class="service-ico">${icon(s.icon)}</span><h3>${s.name}</h3><p>${s.desc}</p><small>${icon("clock")} ${s.eta}</small></a>`; }).join("")}</section></main>`;
+  const cat = url.searchParams.get("cat") || "meal";
+  const categoryItems = cat === "access" ? [services[7]] : [services[6]];
+  const tabs=[["meal","團體午餐"],["access","門禁卡辦理"]];
+  return `<main class="page"><div class="lead"><h1>服務申請</h1><p>團體午餐與門禁卡辦理，一處完成申請</p></div><div class="seg">${tabs.map(t=>`<a class="${cat===t[0]?"on":""}" href="/services?cat=${t[0]}">${t[1]}</a>`).join("")}</div><section class="service-grid">${categoryItems.map((s) => `<a class="service-card" href="${cat === "meal" ? "/meal" : `/services/new?type=${encodeURIComponent(s.name)}`}"><span class="service-ico">${icon(s.icon)}</span><h3>${s.name}</h3><p>${s.desc}</p><small>${icon("clock")} ${s.eta}</small></a>`).join("")}</section></main>`;
 }
 
 function serviceForm(url) {
-  const type = url.searchParams.get("type") || "設施維修申請";
-  return `<main class="page"><div class="lead"><h1>${type}</h1><p>請描述需求，我們會盡快協助處理</p></div><section class="form-card"><form action="/services/success"><label>問題位置<select class="field"><option>A 棟 12F</option><option>B 棟 8F</option><option>C 棟 15F</option></select></label><label>問題標題<input class="field" value="${type}"></label><label>詳細說明<textarea class="field" rows="5" placeholder="請描述目前狀況"></textarea></label><label>聯絡人<input class="field" value="王小明"></label><button class="btn primary" style="width:100%;border:0">送出申請</button></form></section></main>`;
+  const type = url.searchParams.get("type") || "門禁卡辦理";
+  return `<main class="page"><div class="lead"><h1>${type}</h1><p>填寫需求後，我們會盡快協助辦理</p></div><section class="form-card"><form action="/services/success"><label>申請類型<select class="field"><option>新卡申請</option><option>補發門禁卡</option><option>權限異動</option></select></label><label>申請說明<textarea class="field" rows="5" placeholder="請說明卡片使用需求或異動內容"></textarea></label><label>聯絡人<input class="field" value="王小明"></label><button class="btn primary" style="width:100%;border:0">送出申請</button></form></section></main>`;
 }
 
 function records(ticket = false, fresh = false, url) {
@@ -241,8 +240,7 @@ function notifications() {
 }
 
 function more() {
-  const extras=[["file-contract","合約資訊"],["wallet","繳費記錄"],["print","資料列印系統"],["square-parking","停車管理系統"],["truck","貨車預約系統"]];
-  return `<main class="page"><div class="lead"><h1>更多功能</h1><p>完整工作台與大樓資訊</p></div><div class="section-head"><h2>個人功能</h2><a href="/features">功能管理</a></div><section class="quick-list"><a class="quick" href="/access/employee"><span>${icon("id-card")}</span><b>我的通行證</b></a><a class="quick" href="/visitors"><span>${icon("user-group")}</span><b>訪客登記</b></a><a class="quick" href="/reservations"><span>${icon("clipboard-check")}</span><b>我的預約</b></a><a class="quick" href="/tickets"><span>${icon("file-circle-check")}</span><b>我的工單</b></a><a class="quick" href="/notifications"><span>${icon("bell")}</span><b>通知中心</b></a><a class="quick" href="/meal"><span>${icon("ticket")}</span><b>餐券管理</b></a></section><div class="section-head"><h2>空間地圖</h2></div><section class="quick-list"><a class="quick" href="/facilities"><span>${icon("building")}</span><b>大樓設施</b></a><a class="quick" href="/guide"><span>${icon("map")}</span><b>使用指南</b></a><a class="quick" href="/contact"><span>${icon("address-book")}</span><b>聯絡我們</b></a><a class="quick" href="/services"><span>${icon("headset")}</span><b>服務申請</b></a></section><div class="section-head"><h2>其他系統</h2></div>${extras.map(x=>`<a class="feature-row" href="/external?name=${encodeURIComponent(x[1])}"><span class="service-ico" style="margin:0">${icon(x[0])}</span><b>${x[1]}</b><span class="pin">${icon("chevron-right")}</span></a>`).join("")}</main>`;
+  return `<main class="page"><div class="lead"><h1>更多功能</h1><p>個人設定與大樓資訊</p></div><div class="section-head"><h2>個人功能</h2><a href="/features">功能管理</a></div><section class="quick-list"><a class="quick" href="/access/employee"><span>${icon("id-card")}</span><b>我的通行證</b></a><a class="quick" href="/visitors"><span>${icon("user-group")}</span><b>訪客登記</b></a><a class="quick" href="/reservations"><span>${icon("clipboard-check")}</span><b>我的預約</b></a><a class="quick" href="/notifications"><span>${icon("bell")}</span><b>通知中心</b></a><a class="quick" href="/meal"><span>${icon("ticket")}</span><b>餐券管理</b></a></section><div class="section-head"><h2>空間地圖</h2></div><section class="quick-list"><a class="quick" href="/facilities"><span>${icon("building")}</span><b>大樓設施</b></a><a class="quick" href="/guide"><span>${icon("map")}</span><b>使用指南</b></a><a class="quick" href="/contact"><span>${icon("address-book")}</span><b>聯絡我們</b></a><a class="quick" href="/services"><span>${icon("headset")}</span><b>服務申請</b></a></section></main>`;
 }
 
 function guide(contact = false) {
@@ -253,7 +251,7 @@ function guide(contact = false) {
 function featureManager(url) {
   const swapped = url.searchParams.get("swap") === "1";
   const pinned = swapped ? [["box","郵務包裹"],["calendar-check","會議室預約"],["dumbbell","公共設施預約"]] : [["calendar-check","會議室預約"],["dumbbell","公共設施預約"],["box","郵務包裹"]];
-  const rest = [["id-card","我的通行證","/access/employee"],["user-group","訪客登記","/visitors"],["triangle-exclamation","問題反映","/issues"],["people-group","活動與社群","/activities"],["headset","服務申請","/services"],["file-contract","合約資訊","/external?name=合約資訊"],["wallet","繳費記錄","/external?name=繳費記錄"],["square-parking","停車管理系統","/external?name=停車管理系統"]];
+  const rest = [["id-card","我的通行證","/access/employee"],["user-group","訪客登記","/visitors"],["people-group","活動與社群","/activities"],["headset","服務申請","/services"]];
   return `<main class="page"><div class="lead"><h1>功能管理</h1><p>常用功能最多 3 個，可調整順序與釘選項目</p></div><div class="section-head"><h2>常用功能（3/8）</h2><a href="/features?swap=${swapped?0:1}">交換順序</a></div>${pinned.map((x,i)=>`<div class="feature-row"><span class="drag">${icon("grip-vertical")}</span><span class="service-ico" style="margin:0">${icon(x[0])}</span><b>${x[1]}</b><a class="pin" href="/features?swap=${i===0?1:0}">${icon("thumbtack")}</a></div>`).join("")}<div class="section-head"><h2>功能列表</h2></div>${rest.map(x=>`<a class="feature-row" href="${x[2]}"><span class="drag">${icon("grip-vertical")}</span><span class="service-ico" style="margin:0">${icon(x[0])}</span><b>${x[1]}</b><span class="pin">${icon("plus")}</span></a>`).join("")}<a class="btn primary" href="/?saved=1">儲存</a></main>`;
 }
 
@@ -395,6 +393,7 @@ export function renderV11(pathname: string, search = "") {
     const path = url.pathname.replace(/\/+$/, "") || "/";
     let title = "", body = "", back = "/";
     if (path === "/") body = home();
+    else if (/^\/(parking|tickets|issues)(\/|$)/.test(path)) { title = "服務已調整"; body = `<main class="page success"><div class="success-mark">${icon("circle-check")}</div><h1>此服務已下架</h1><p>目前服務申請僅提供團體午餐訂購與門禁卡辦理。</p><a class="btn primary" href="/services">前往服務申請</a></main>`; }
     else if (path === "/features") { title = "功能管理"; body = featureManager(url); }
     else if (path === "/booking") { title = "預約中心"; body = bookingHub(); back = "/"; }
     else if (path === "/space") { title = "會議室預約"; body = spacePage(false, url); back = "/booking"; }
@@ -420,7 +419,7 @@ export function renderV11(pathname: string, search = "") {
     else if (path === "/activities/detail") { title = "活動詳情"; body = activityDetail(); back = "/activities"; }
     else if (path === "/services") { title = "服務申請"; body = servicePage(url); }
     else if (path === "/services/new") { title = "提出申請"; body = serviceForm(url); back = "/services"; }
-    else if (path === "/services/success") { title = "申請完成"; body = success("申請已送出", "案件編號 #SR-2026-0158，您可隨時查看進度。", "/tickets?new=1", "查看我的工單"); back = "/services"; }
+    else if (path === "/services/success") { title = "申請完成"; body = success("申請已送出", "我們已收到您的申請，將依服務說明與您聯繫。", "/services", "返回服務申請"); back = "/services"; }
     else if (path === "/tickets") { title = "我的工單"; body = records(true, url.searchParams.get("new") === "1", url); }
     else if (path === "/tickets/detail") { title = "工單詳情"; body = simpleDetail("會議室冷氣不冷",[["案件編號","#SR-2026-0158"],["處理狀態","工程人員處理中"],["建立時間","今日 09:20"],["最新回覆","已安排 15:00 到場檢查"]],"/tickets"); back="/tickets"; }
     else if (path === "/packages") { title = "郵務包裹"; body = packages(url); back="/services"; }
