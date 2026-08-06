@@ -53,6 +53,7 @@ const accountCss = `
 .feature.visual:before{content:"";position:absolute;inset:0;border:1px solid #ffffff2e;border-radius:18px;pointer-events:none}.feature.visual:after{display:none}
 .feature.visual>*{position:relative;z-index:1}.feature.visual .ico{width:39px;height:39px;margin:0 0 10px;background:#fff8f0e8;color:#ad5e10;backdrop-filter:blur(8px)}
 .feature.visual b{font-size:14px;text-shadow:0 1px 5px #16120e}.feature.visual small{color:#fff;opacity:.88}.feature.visual em{top:13px;color:#fff;background:#16120e66;width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.service-visual-grid{margin-top:16px}.visual-service{min-height:224px;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;border:0;background-image:linear-gradient(180deg,#16120e08 8%,#16120ee8 100%),var(--cover);background-size:cover;background-position:center;box-shadow:0 10px 24px #16120e28}.visual-service:before{content:"";position:absolute;inset:0;border:1px solid #ffffff33;border-radius:17px}.visual-service>*{position:relative;z-index:1}.visual-service .service-ico{width:40px;height:40px;margin:0 0 12px;background:#fff8f0e8;color:#ad5e10;backdrop-filter:blur(8px)}.visual-service h3{font-size:16px;text-shadow:0 1px 5px #16120e}.visual-service p,.visual-service small{color:#fff}.visual-service p{opacity:.9}.visual-service small{left:14px;bottom:14px;opacity:.9}
 .profile-avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:0 0 40px;background:linear-gradient(135deg,#f79431,#ad5e10);color:#fff;font-size:15px;font-weight:900;border:2px solid #fff;box-shadow:0 0 0 2px #fddab0;overflow:hidden}
 .profile-avatar:active{transform:scale(.96)}
 .account-hero{display:flex;align-items:center;gap:15px;background:linear-gradient(135deg,#fff8f0,#fef0dc);border:1px solid #fddab0;border-radius:20px;padding:18px;margin-top:14px}
@@ -102,7 +103,7 @@ function home() {
     <section class="primary-grid">
       <a class="feature visual" style="--cover:url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=600&q=82')" href="/space"><span class="ico">${icon("calendar-check")}</span><b>會議室預約</b><small>找空間與可用時段</small><em>${icon("arrow-right")}</em></a>
       <a class="feature visual" style="--cover:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=82')" href="/facility"><span class="ico">${icon("dumbbell")}</span><b>公共設施</b><small>預約、點數與紀錄</small><em>${icon("arrow-right")}</em></a>
-      <a class="feature visual" style="--cover:url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=82')" href="/packages"><span class="ico">${icon("box")}</span><b>郵務包裹</b><small>寄件與收件管理</small><em>${icon("arrow-right")}</em></a>
+      <a class="feature visual" style="--cover:url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=600&q=82')" href="/activities"><span class="ico">${icon("people-group")}</span><b>活動與社群</b><small>探索活動與交流機會</small><em>${icon("arrow-right")}</em></a>
     </section>
     <div class="section-head"><h2>快速入口</h2></div>
     <section class="quick-list">
@@ -184,10 +185,8 @@ function activityDetail() {
 }
 
 function servicePage(url) {
-  const cat = url.searchParams.get("cat") || "meal";
-  const categoryItems = cat === "access" ? [services[7]] : [services[6]];
-  const tabs=[["meal","團體午餐"],["access","門禁卡辦理"]];
-  return `<main class="page"><div class="lead"><h1>服務申請</h1><p>團體午餐與門禁卡辦理，一處完成申請</p></div><div class="seg">${tabs.map(t=>`<a class="${cat===t[0]?"on":""}" href="/services?cat=${t[0]}">${t[1]}</a>`).join("")}</div><section class="service-grid">${categoryItems.map((s) => `<a class="service-card" href="${cat === "meal" ? "/meal" : `/services/new?type=${encodeURIComponent(s.name)}`}"><span class="service-ico">${icon(s.icon)}</span><h3>${s.name}</h3><p>${s.desc}</p><small>${icon("clock")} ${s.eta}</small></a>`).join("")}</section></main>`;
+  const categoryItems = [services[6], services[7]];
+  return `<main class="page"><div class="lead"><h1>服務申請</h1><p>團體午餐與門禁卡辦理，一處完成申請</p></div><section class="service-grid service-visual-grid">${categoryItems.map((s) => `<a class="service-card visual-service" style="--cover:url('${s.icon === "utensils" ? "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=82" : "https://images.unsplash.com/photo-1605311819391-21e2e8c4a785?auto=format&fit=crop&w=900&q=82"}')" href="${s.icon === "utensils" ? "/meal" : `/services/new?type=${encodeURIComponent(s.name)}`}"><span class="service-ico">${icon(s.icon)}</span><h3>${s.name}</h3><p>${s.desc}</p><small>${icon("clock")} ${s.eta}</small></a>`).join("")}</section></main>`;
 }
 
 function serviceForm(url) {
@@ -248,7 +247,7 @@ function guide(contact = false) {
 
 function featureManager(url) {
   const swapped = url.searchParams.get("swap") === "1";
-  const pinned = swapped ? [["box","郵務包裹"],["calendar-check","會議室預約"],["dumbbell","公共設施預約"]] : [["calendar-check","會議室預約"],["dumbbell","公共設施預約"],["box","郵務包裹"]];
+  const pinned = swapped ? [["people-group","活動與社群"],["calendar-check","會議室預約"],["dumbbell","公共設施預約"]] : [["calendar-check","會議室預約"],["dumbbell","公共設施預約"],["people-group","活動與社群"]];
   const rest = [["id-card","我的通行證","/access/employee"],["user-group","訪客登記","/visitors"],["people-group","活動與社群","/activities"],["headset","服務申請","/services"]];
   return `<main class="page"><div class="lead"><h1>功能管理</h1><p>常用功能最多 3 個，可調整順序與釘選項目</p></div><div class="section-head"><h2>常用功能（3/8）</h2><a href="/features?swap=${swapped?0:1}">交換順序</a></div>${pinned.map((x,i)=>`<div class="feature-row"><span class="drag">${icon("grip-vertical")}</span><span class="service-ico" style="margin:0">${icon(x[0])}</span><b>${x[1]}</b><a class="pin" href="/features?swap=${i===0?1:0}">${icon("thumbtack")}</a></div>`).join("")}<div class="section-head"><h2>功能列表</h2></div>${rest.map(x=>`<a class="feature-row" href="${x[2]}"><span class="drag">${icon("grip-vertical")}</span><span class="service-ico" style="margin:0">${icon(x[0])}</span><b>${x[1]}</b><span class="pin">${icon("plus")}</span></a>`).join("")}<a class="btn primary" href="/?saved=1">儲存</a></main>`;
 }
@@ -394,7 +393,7 @@ export default {
       return env.ASSETS.fetch(request);
     }
     let title = "", body = "", back = "/";
-    if (/^\/(parking|tickets|issues)(\/|$)/.test(path)) { title = "服務已調整"; body = `<main class="page success"><div class="success-mark">${icon("circle-check")}</div><h1>此服務已下架</h1><p>目前服務申請僅提供團體午餐訂購與門禁卡辦理。</p><a class="btn primary" href="/services">前往服務申請</a></main>`; }
+    if (/^\/(parking|tickets|issues|packages)(\/|$)/.test(path)) { title = "服務已調整"; body = `<main class="page success"><div class="success-mark">${icon("circle-check")}</div><h1>此服務已下架</h1><p>目前服務申請僅提供團體午餐訂購與門禁卡辦理。</p><a class="btn primary" href="/services">前往服務申請</a></main>`; }
     else if (path === "/booking") { title = "預約中心"; body = bookingHub(); back = "/"; }
     else if (path === "/parking") { title = "車位預約"; body = parkingPage(url); back = "/booking"; }
     else if (path === "/parking/book") { title = "確認車位預約"; body = parkingBook(url); back = "/parking?tab=query"; }
